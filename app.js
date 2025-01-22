@@ -41,4 +41,21 @@ app.delete('/posts/:id', (req, res) => {
         res.status(500).json({ error: 'Errore nell\'eliminazione del post' });
       });
   });
+
+  //SHOW POST
+
+  app.get('/posts/:id', async (req, res) => {
+    const postId = req.params.id; 
   
+    try {
+      const [rows] = await db.execute('SELECT * FROM db_blog.posts WHERE id = ?', [postId]);
+  
+      if (rows.length === 0) {
+        return res.status(404).json({ error: 'Post non trovato' });
+      }
+      res.json(rows[0]);
+    } catch (err) {
+      console.error(err);
+      res.status(500).json({ error: 'Errore nel recupero del post' });
+    }
+  });
